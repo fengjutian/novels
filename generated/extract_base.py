@@ -12,7 +12,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
 OTHERS = ROOT / "content" / "chichao-beijing" / "others"
-OUT = ROOT / "generated" / "base_77_86.md"
+OUT = ROOT / "generated" / ("base_%d_%d.md" % (chapters[0], chapters[-1]))
 WIDTH = 88
 
 
@@ -53,6 +53,7 @@ def wrap(text: str, width: int = WIDTH) -> str:
 
 def main() -> int:
     chapters = [int(a) for a in sys.argv[1:]] or list(range(77, 87))
+    OUT = ROOT / "generated" / ("base_%d_%d.md" % (chapters[0], chapters[-1]))
     chunks: list[str] = []
     chunks.append("# 《赤潮北境》77-86 章设定基线（自动抽取，仅供扩写参考）\n")
     chunks.append(f"> 抽取章号: {', '.join(str(c) for c in chapters)}\n")
