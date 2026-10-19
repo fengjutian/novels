@@ -155,10 +155,20 @@ def check(path: Path) -> list[tuple[str, str, str]]:
         out.append(("FAIL", "正文分隔线", "§3.1 正文中不使用 '---'"))
 
     # --- 引号配对 ---
+    # 全书 10 章用 ASCII 直引号（804 个），其余用中文引号（451 个），两派共存。
+    # 只查中文引号会对 ASCII 章完全失效，因此两种都要查。
+    # 2026-10-19 实例：第86章 264 个 ASCII 里混进 1 个中文闭引号，
+    # 中文开=0 闭=1 —— 正是 ASCII 检查发现不了的那一类混用。
     for op, cl in (("“", "”"), ("‘", "’")):
         if body.count(op) != body.count(cl):
             out.append(("FAIL", "引号", f"{op}{cl} 不配对: "
                                        f"{body.count(op)} / {body.count(cl)}"))
+    n_ascii = body.count('"')
+    if n_ascii % 2 != 0:
+        out.append(("FAIL", "引号", f'ASCII " 落单: {n_ascii} 个'))
+    # 一句话里 ASCII 与中文引号混用
+    if re.search(r'"[^"\n]*[”“]', body) or re.search(r'[“”][^""\n]*"', body):
+        out.append(("FAIL", "引号", "ASCII 与中文引号混用"))
 
     # --- 章节备注四项 ---
     # 全档 86 章零章节备注（2026-10-19 实测），属全书既存体例偏差而非本章问题。
