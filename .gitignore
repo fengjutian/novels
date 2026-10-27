@@ -14,3 +14,6 @@ quartz/cli/tui/dist/
 .turbo/
 
 content/chichao-beijing/.octop/
+
+__pycache__/
+*.pyc
